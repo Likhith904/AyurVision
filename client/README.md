@@ -9,4 +9,4 @@ npm run dev
 
 Initial page with navbar:
 
-![alt text]([https://github.com/josephbinoy/aestheticity/blob/main/public/2023-10-25-21-21-26.gif](https://github.com/Harshith-R-shetty/AyurVision/blob/Likhith-18-rag-chatbot/client/public/Screenshot_11-5-2024_182730_localhost.jpeg)?raw=true)
+![alt text](https://github.com/Harshith-R-shetty/AyurVision/blob/Likhith-18-rag-chatbot/client/public/Screenshot_11-5-2024_182730_localhost.jpeg?raw=true)
