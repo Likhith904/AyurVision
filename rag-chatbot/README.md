@@ -1,6 +1,6 @@
-<<<<<<< HEAD
+
 # llama-index
-=======
+
 # RAG-chat-with-documents
 Chainlit app for advanced RAG. Uses llamaparse, langchain, qdrant and models from groq.
 
@@ -34,4 +34,3 @@ chainlit run app.py
 - [LlamaIndex blogpost about Llamaparse](https://www.llamaindex.ai/blog/launching-the-first-genai-native-document-parsing-platform)
 - [Parsing instructions Llamaparse](https://colab.research.google.com/drive/1dO2cwDCXjj9pS9yQDZ2vjg-0b5sRXQYo#scrollTo=dEX7Mv9V0UvM)
 
->>>>>>> 5672a8f (made some changes)
