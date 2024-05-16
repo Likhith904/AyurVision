@@ -1,44 +1,57 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const MyForm = () => {
-  const [formData, setFormData] = useState({
-    // Initialize state for each question
-    q1:0,
-    q2:0,
-    q3:0,
-    q4: 0,
-    q5: 0,
-    q6: 0,
-    q7: 0,
-    q8: 0,
-    q9: 0,
-    q10: 0,
-    q11: 0,
-    q12: 0,
-    q13: 0,
-    q14: 0,
-    q15: 0,
-    q16: 0,
-    q17: 0,
-    q18: 0,
-    q19: 0,
-    q20: 0,
-    q21: 0,
-    q22: 0,
-    q23: 0,
-    q24: 0,
-    q25: 0,
-    q26: 0,
-    q27: 0,
-    q28: 0,
-    q29: 0,
-    q30: 0,
-    q31: 0,
-    q32: 0,
-    q33: 0,
-    q34:0
-  });
+  const [formData, setFormData] = useState({});
+  const [questions, setQuestions] = useState([]);
+
+  useEffect(() => {
+    // Mock dataset (replace with your actual data)
+    const data = {
+      Gender: ['Male', 'Female'],
+      bodyBuild_Size: ['Weaklydeveloped', 'Welldeveloped', 'Moderatelydeveloped'],
+      bodyFrame_Breadth: ['Thin/Narrow', 'Broad', 'Medium'],
+      hair_Nature: ['Normal', 'Seasonal/Variable', 'Dry', 'Oily'],
+      skin_Nature: ['Dry', 'Normal', 'Oily', 'Seasonal/Variable'],
+      skin_Color: ['Whitish', 'FairPaleYellow', 'Dark', 'FairReddish', 'FairPink'],
+      weight_Changes: ['Gainandloseeasily', 'Difficultyingaining', 'Gaineasilyandlosewithdifficulty', 'Stable'],
+      nails_color: ['Pink', 'Reddish', 'PaleYellow'],
+      nails_Length: ['Long', 'Medium', 'Tooshort/TooLong'],
+      nails_nature: ['Non_Brittle', 'Brittle'],
+      teeth_Color: ['MilkyWhite', 'Yellowish', 'Dull/Blackish'],
+      teeth_Shape: ['Regular', 'Irregular'], // Excluding null options
+      teeth_Size: ['Medium', 'Large', 'TooSmall', 'TooLarge'],
+      recalling_speed: ['Moderately', 'Slowly', 'Variably', 'Quickly'],
+      memorizing_speed: ['Moderately', 'Quickly', 'Slowly', 'Variably'],
+      working_Speed: ['Quick/Fast/Brisk', 'Medium', 'Slow', 'Variable'],
+      sleep_Amount: ['Medium', 'High', 'Low', 'Variable'],
+      sleep_Quality: ['Sound', 'Deep', 'Shallow'],
+      speaking_Amount: ['Moderate', 'Less', 'Excessive'],
+      speaking_Speed: ['Medium', 'Quick', 'Slow', 'Variable'],
+      walking_Speed: ['Quick/Fast/Brisk', 'Medium', 'Slow', 'Variable'],
+      walking_steps: ['Medium', 'Large', 'Small'],
+      bowel_Freq: ['Regular', 'Irregular', 'Variable'],
+      bowel_Tendency: ['Constipation', 'Loosemotion'], // Excluding null options
+      Anger_Freq: ['Good', 'Poor', 'Medium'],
+      Irritability_speed: ['Quickly', 'Slowly', 'Moderately', 'Variably'],
+      speech_Argumentative: ['Non_Argumentative', 'Argumentative'],
+    };
+
+    // Convert dataset into array of objects for easier mapping
+    const questionsArray = Object.entries(data).map(([key, options]) => ({
+      key,
+      label: key.replace(/_/g, ' '),
+      options,
+    }));
+
+    // Set questions and initialize form data
+    setQuestions(questionsArray);
+    const initialFormData = {};
+    questionsArray.forEach(question => {
+      initialFormData[question.key] = '';
+    });
+    setFormData(initialFormData);
+  }, []);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -51,14 +64,13 @@ const MyForm = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    // Process form data and create an array
-    const dataArray = [];
-    for (let i = 1; i <= 34; i++) {
-      dataArray.push(formData[`q${i}`]);
-    }
+    // const dataArray = [];
+    // for (let i = 1; i <= 34; i++) {
+    //     dataArray.push(formData['data[i]`]);
+    // }
 
-    // Send the array to the server
-    axios.post('http://localhost:5173/submit', { data: dataArray })
+    // Send the form data to the server
+    axios.post('http://localhost:5173/submit', formData)
       .then(response => {
         // Handle response from server if needed
         console.log(response.data);
@@ -73,22 +85,22 @@ const MyForm = () => {
     <div>
       <h1>Prakriti</h1>
       <form onSubmit={handleSubmit}>
-        {/* Questions with options */}
-        {[...Array(34)].map((_, index) => (
+        {/* Display questions and options */}
+        {questions.map((question, index) => (
           <div key={index}>
-            <h3>Question {index + 1}</h3>
-            <label>
-              <input type="radio" name={`q${index + 1}`} value="1" checked={formData[`q${index + 1}`] === 'Option 1'} onChange={handleChange} />
-              Option 1
-            </label>
-            <label>
-              <input type="radio" name={`q${index + 1}`} value="2" checked={formData[`q${index + 1}`] === 'Option 2'} onChange={handleChange} />
-              Option 2
-            </label>
-            <label>
-              <input type="radio" name={`q${index + 1}`} value="3" checked={formData[`q${index + 1}`] === 'Option 3'} onChange={handleChange} />
-              Option 3
-            </label>
+            <h3>{question.label}</h3>
+            {question.options.map((option, optionIndex) => (
+              <label key={optionIndex}>
+                <input
+                  type="radio"
+                  name={question.key}
+                  value={option}
+                  checked={formData[question.key] === option}
+                  onChange={handleChange}
+                />
+                {option}
+              </label>
+            ))}
           </div>
         ))}
         <button type="submit">Submit</button>
