@@ -32,7 +32,7 @@ def process_input(input_data):
     print(input_data)
     pred=model.predict(np.reshape(input_data['data'], (1, 34)))
     prediction = np.argmax(pred, axis=1)[0]
-    return int(prediction)
+    return classes[prediction]
 
 if __name__ == "__main__":
     input_data = json.loads(sys.stdin.readline())
