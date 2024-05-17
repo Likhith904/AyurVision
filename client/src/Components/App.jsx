@@ -1,7 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 
-// import Navbar from "./Navbar";
+import Navbar from "./Navbar";
+import MyForm from "./MyForm";
 
 export default function App() {
   const [formData, setFormData] = useState({
@@ -40,22 +41,22 @@ export default function App() {
     q33: 0,
     q34: 0,
   });
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: parseInt(value, 10),
-    });
-  };
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData({
+  //     ...formData,
+  //     [name]: parseInt(value, 10),
+  //   });
+  // };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     // Process form data and create an array
-    const dataArray = [];
-    for (let i = 1; i <= 34; i++) {
-      dataArray.push(formData[`q${i}`]);
-    }
+    // const dataArray = [];
+    // for (let i = 1; i <= 34; i++) {
+    //     dataArray.push(formData[`q${i}`]);
+    // }
     // You can add more form data to the array as needed
 
     // Send the array to the server
@@ -71,29 +72,11 @@ export default function App() {
       });
   };
   return (
-    <>
-      {/* <Navbar /> */}
-      <form onSubmit={handleSubmit}>
-        <label>
-          Input 1:
-          <input
-            type="text"
-            name="q1"
-            value={formData.q1}
-            onChange={handleChange}
-          />
-        </label>
-        <label>
-          Input 2:
-          <input
-            type="text"
-            name="q2"
-            value={formData.q2}
-            onChange={handleChange}
-          />
-        </label>
-        <button type="submit">Submit</button>
-      </form>
-    </>
+    <div>
+      <Navbar />
+      <div style={{ marginTop: "100px" }}>
+        <MyForm />
+      </div>
+    </div>
   );
 }
