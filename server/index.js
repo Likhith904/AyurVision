@@ -15,13 +15,13 @@ app.get("/chatbot", (req, res) => {
 app.post("/predict", (req, res) => {
   console.log("Request received");
   // Receive input data from client
-  const inputData = req.body.data;
+  const inputData = req.body;
 
   // Spawn child process
   const pythonProcess = spawn("python", ["model.py"]);
 
   // Send input data to child process
-  pythonProcess.stdin.write(inputData);
+  pythonProcess.stdin.write(JSON.stringify(inputData));
   pythonProcess.stdin.end();
 
   var dataToSend = "";
@@ -35,9 +35,9 @@ app.post("/predict", (req, res) => {
   });
 
   // Handle errors in stderr
-  pythonProcess.stderr.on("data", (data) => {
-    console.error("Error in stderr:", data.toString());
-  });
+  // pythonProcess.stderr.on("data", (data) => {
+  //   console.error("Error in stderr:", data.toString());
+  // });
 
   pythonProcess.on("close", (code) => {
     console.log(`child process close all stdio with code ${code}`);
