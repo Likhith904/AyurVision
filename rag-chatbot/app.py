@@ -7,7 +7,6 @@ from langchain_community.vectorstores import Qdrant
 from langchain_community.embeddings.fastembed import FastEmbedEmbeddings
 from qdrant_client import QdrantClient
 from langchain_community.chat_models import ChatOllama
-import streamlit as st
 
 
 import chainlit as cl

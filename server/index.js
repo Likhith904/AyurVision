@@ -1,11 +1,23 @@
 import express from "express";
 import cors from "cors";
+// import { createProxyMiddleware } from "http-proxy-middleware";
 import { spawn } from "child_process";
 
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: "10mb" }));
-
+// app.use((req, res, next) => {
+//   res.setHeader("X-Frame-Options", "ALLOW-FROM http://localhost:5173");
+//   res.setHeader(
+//     "Content-Security-Policy",
+//     "frame-ancestors 'self' http://localhost:5173"
+//   );
+//   next();
+// });
+// app.use(
+//   "/chainlit",
+//   createProxyMiddleware({ target: "http://localhost:8000", changeOrigin: true })
+// );
 app.post("/chatbot", (req, res) => {});
 
 app.get("/chatbot", (req, res) => {

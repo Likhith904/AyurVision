@@ -1,5 +1,6 @@
 import Navbar from "./Navbar";
 import MyForm from "./MyForm";
+import ChatBot from "./ChatBot";
 
 export default function App() {
   return (
@@ -8,6 +9,7 @@ export default function App() {
       <div style={{ marginTop: "100px" }}>
         <MyForm />
       </div>
+      <ChatBot />
     </div>
   );
 }
