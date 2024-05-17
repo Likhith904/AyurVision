@@ -7,6 +7,7 @@ from langchain_community.vectorstores import Qdrant
 from langchain_community.embeddings.fastembed import FastEmbedEmbeddings
 from qdrant_client import QdrantClient
 from langchain_community.chat_models import ChatOllama
+import streamlit as st
 
 
 import chainlit as cl
@@ -42,6 +43,8 @@ def set_custom_prompt():
 
 chat_model = ChatGroq(temperature=0, model_name="mixtral-8x7b-32768")
 # chat_model = ChatGroq(temperature=0, model_name="Llama2-70b-4096")
+# chat_model = ChatGroq(temperature=0, model_name="Llama3-70b-8192")
+# chat_model = ChatGroq(temperature=0, model_name="Llama3-8b-8192")
 # chat_model = ChatOllama(model="llama2", request_timeout=30.0)
 
 client = QdrantClient(api_key=qdrant_api_key, url=qdrant_url,)
@@ -80,7 +83,7 @@ async def start():
     welcome_message = cl.Message(content="Starting the bot...")
     await welcome_message.send()
     welcome_message.content = (
-        "Hi, Welcome to Chat With Documents using Llamaparse, LangChain, Qdrant and models from Groq."
+        "Hi, Welcome to AyurBot,I am your personal ayurvedic doc go ahead and ask me some questions."
     )
     await welcome_message.update()
     cl.user_session.set("chain", chain)
@@ -100,7 +103,7 @@ async def main(message):
     cb = cl.AsyncLangchainCallbackHandler()
     cb.answer_reached = True
     # res=await chain.acall(message, callbacks=[cb])
-    res = await chain.acall(message.content, callbacks=[cb])
+    res = await chain.ainvoke(message.content, callbacks=[cb])
     # print(f"response: {res}")
     answer = res["result"]
     # answer = answer.replace(".", ".\n")
@@ -113,13 +116,27 @@ async def main(message):
             source_name = f"source_{source_idx}"
             # Create the text element referenced in the message
             text_elements.append(
-                cl.Text(content=source_doc.page_content, name=source_name)
+                cl.Text(content=source_doc.page_content,
+                        name=source_name, hidden=True)
             )
         source_names = [text_el.name for text_el in text_elements]
 
         if source_names:
-            answer += f"\nSources: {', '.join(source_names)}"
+            answer += f"\nSources:" + str(source_names)
         else:
             answer += "\nNo sources found"
+        # if source_names:
+        #     # If there are sources, show a button to reveal them
+        #     button_element = cl.Button(
+        #         name="reveal_sources", text="Show Sources")
+
+        #     # Append the button to the text elements
+        #     text_elements.append(button_element)
+
+        #     # Prepare the message content
+        #     answer += "\nClick the button below to reveal sources"
+        # else:
+        #     # If no sources, just display "No sources found"
+        #     answer += "\nNo sources found"
 
     await cl.Message(content=answer, elements=text_elements).send()
