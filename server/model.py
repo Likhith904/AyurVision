@@ -27,7 +27,7 @@ model = tf.keras.models.load_model('./models/local_model.keras')
 #               loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
 # # Load the saved weights into the model
-# model.load_weights('./models/local_model.weights.h5')
+model.load_weights('./models/local_model.weights.h5')
 
 classes = ['Kapha', 'Pitta', 'Vata']
 

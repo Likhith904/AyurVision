@@ -1,11 +1,13 @@
 import express from "express";
 import cors from "cors";
+import path from "path";
 // import { createProxyMiddleware } from "http-proxy-middleware";
-import { spawn } from "child_process";
-
+import { fork, spawn } from "child_process";
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true }));
+const __dirname = path.resolve();
 // app.use((req, res, next) => {
 //   res.setHeader("X-Frame-Options", "ALLOW-FROM http://localhost:5173");
 //   res.setHeader(
@@ -18,10 +20,61 @@ app.use(express.json({ limit: "10mb" }));
 //   "/chainlit",
 //   createProxyMiddleware({ target: "http://localhost:8000", changeOrigin: true })
 // );
-app.post("/chatbot", (req, res) => {});
+
+const getPrakriti = (dataToSend, res) => {
+  const virtualEnvPath = path.resolve(__dirname, "..", ".venv");
+  const activateScript = path.join(virtualEnvPath, "Scripts", "activate");
+  console.log(activateScript);
+  const activateProcess = spawn(activateScript, [], { shell: true });
+  activateProcess.stdout.on("data", (data) => {
+    console.log(`stdout (activate): ${data}`);
+  });
+
+  activateProcess.stderr.on("data", (data) => {
+    console.error(`stderr (activate): ${data}`);
+  });
+
+  activateProcess.on("close", (code) => {
+    console.log(`child process (activate) exited with code ${code}`);
+    const pythonProcess = fork("./child.js");
+
+    console.log("running inside getPrakriti");
+    pythonProcess.send({ data: JSON.stringify(dataToSend) });
+
+    // Listen for messages from the child process
+    pythonProcess.on("message", (message) => {
+      if (message.error) {
+        console.error(`stderr in child: ${message.error}`);
+        res.status(500).send("Internal Server Error");
+      } else {
+        console.log(message.data);
+        // res.status(200).send("Success");
+      }
+    });
+
+    // Handle child process exit
+    pythonProcess.on("exit", (code) => {
+      console.log(`child process exited with code ${code}`);
+      try {
+        // Handle received data as needed
+        res.status(200).json(dataToSend);
+      } catch (error) {
+        console.error("Error:", error.message);
+        res.status(500).send("Internal Server Error");
+      }
+    });
+  });
+};
+app.post("/chatbot", (req, res) => {
+  console.log("prakriti request send");
+  const input_data = req.query.msg;
+  getPrakriti(input_data, res);
+});
 
 app.get("/chatbot", (req, res) => {
-  res.send("Get request received");
+  console.log("prakriti request send");
+  const input_data = req.query.msg;
+  getPrakriti(input_data, res);
 });
 
 app.post("/predict", (req, res) => {
@@ -46,16 +99,19 @@ app.post("/predict", (req, res) => {
     console.error("Error in stdout:", err);
   });
 
-  // Handle errors in stderr
-  // pythonProcess.stderr.on("data", (data) => {
-  //   console.error("Error in stderr:", data.toString());
-  // });
+  //Handle errors in stderr
+  pythonProcess.stderr.on("data", (data) => {
+    console.error("Error in stderr:", data.toString());
+  });
 
   pythonProcess.on("close", (code) => {
     console.log(`child process close all stdio with code ${code}`);
     console.log(dataToSend);
+    // getPrakriti({ prakriti: dataToSend });
+
     try {
-      res.status(200).json({ msg: dataToSend });
+      console.log(dataToSend);
+      res.redirect(`/chatbot?msg=${encodeURIComponent(dataToSend)}`);
     } catch (error) {
       console.error("Error:", error.msg);
       res.status(500).send("Internal Server Error");
