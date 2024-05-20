@@ -2,13 +2,15 @@
 import { exec } from "child_process";
 import path from "path";
 import fs from "fs";
+// import { escape} from "querystring";
+import escape from "escape-path-with-spaces";
 const __dirname = path.resolve();
 // Run the pip show chainlit command
 
 process.on("message", (msg) => {
   // const appPath = path.resolve(__dirname, "..", "rag-chatbot", "app.py");
   const envPath = path.resolve(__dirname, "..", "rag-chatbot", ".env");
-
+  // const envPath = escape(envPath1);
   // Read the existing content of the .env file
   let envContent = "";
   if (fs.existsSync(envPath)) {
@@ -32,6 +34,7 @@ process.on("message", (msg) => {
   fs.writeFileSync(envPath, envContent);
 
   const appPath = path.resolve(__dirname, "..", "rag-chatbot", "app.py");
+  // const appPath = escape(appPath1);
   const command = `chainlit run ${appPath}`;
   console.log("running this command :", command);
   exec(command, (error, stdout, stderr) => {
