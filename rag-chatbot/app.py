@@ -1,4 +1,5 @@
 
+
 # import required dependencies
 # https://docs.chainlit.io/integrations/langchain
 import os
@@ -20,16 +21,50 @@ load_dotenv()
 groq_api_key = os.getenv("GROQ_API_KEY")
 qdrant_url = os.getenv("QDRANT_URL")
 qdrant_api_key = os.getenv("QDRANT_API_KEY")
-prakriti = os.getenv("PRAKRITI")
+prakriti = os.getenv('PRAKRITI').lower()
 
-custom_prompt_template = """Use the following pieces of information to answer the user's question.
+custom_prompt_template_kapha = """Use the following pieces of information to answer the user's question.
 If you don't know the answer, just say that you don't know, don't try to make up an answer.Be friendly to the user
 and respond appropriately.
-
+this user has kapha prakriti and this is taken from the test the user gave on our website.
 Context: {context}
 Question: {question}
 
 Only return the helpful answer below and nothing else.
+Answer general questions normally.
+Helpful answer:
+"""
+custom_prompt_template_vata = """Use the following pieces of information to answer the user's question.
+If you don't know the answer, just say that you don't know, don't try to make up an answer.Be friendly to the user
+and respond appropriately.
+this user has vata prakriti and this is taken from the test the user gave on our webiste.
+Context: {context}
+Question: {question}
+
+Only return the helpful answer below and nothing else.
+Answer general questions normally.
+Helpful answer:
+"""
+custom_prompt_template_pitta = """Use the following pieces of information to answer the user's question.
+If you don't know the answer, just say that you don't know, don't try to make up an answer.Be friendly to the user
+and respond appropriately.
+this user has pitta prakriti and this is taken from the test the user gave on our website.
+Context: {context}
+Question: {question}
+
+Only return the helpful answer below and nothing else.
+Answer general questions normally.
+Helpful answer:
+"""
+custom_prompt_template = """Use the following pieces of information to answer the user's question.
+If you don't know the answer, just say that you don't know, don't try to make up an answer.Be friendly to the user
+and respond appropriately.
+the user has not taken any prakriti test from our website and consider him as neutral prakriti.
+Context: {context}
+Question: {question}
+
+Only return the helpful answer below and nothing else.
+Answer general questions normally.
 Helpful answer:
 """
 
@@ -40,7 +75,18 @@ def set_custom_prompt():
     """
     # print("inside setcustom_prompt::", prakriti)
     # custom_prompt_template = custom_prompt_template.format(prakriti=prakriti)
-    prompt = PromptTemplate(template=custom_prompt_template,
+    custom = ""
+
+    if prakriti == "vata":
+        custom = custom_prompt_template_vata
+    elif prakriti == "kapha":
+        custom = custom_prompt_template_kapha
+    elif prakriti == "pitta":
+        custom = custom_prompt_template_pitta
+    else:
+        custom = custom_prompt_template
+
+    prompt = PromptTemplate(template=custom,
                             input_variables=['context', 'question'])
     # print(custom_prompt_template)
     # print(prompt)
@@ -110,8 +156,8 @@ async def main(message):
     cb.answer_reached = True
     # res=await chain.acall(message, callbacks=[cb])
     print(message.content)
-    prak = "the user is {prakriti} type".format(prakriti=prakriti)
-    res = await chain.ainvoke(message.content+prak, callbacks=[cb])
+    # prak = "the user is {prakriti} type".format(prakriti=prakriti)
+    res = await chain.ainvoke(message.content, callbacks=[cb])
     # print(f"response: {res}")
     answer = res["result"]
     # answer = answer.replace(".", ".\n")

@@ -39,7 +39,9 @@ const getPrakriti = (dataToSend, res) => {
     const pythonProcess = fork("./child.js");
 
     console.log("running inside getPrakriti");
-    pythonProcess.send({ data: JSON.stringify(dataToSend) });
+    const data = dataToSend;
+    console.log(dataToSend);
+    pythonProcess.send({ data: dataToSend });
 
     // Listen for messages from the child process
     pythonProcess.on("message", (message) => {
@@ -67,12 +69,12 @@ const getPrakriti = (dataToSend, res) => {
 };
 app.post("/chatbot", (req, res) => {
   console.log("prakriti request send");
-  const input_data = req.query.msg;
+  let input_data = req.query.msg || "";
   getPrakriti(input_data, res);
 });
 
 app.get("/chatbot", (req, res) => {
-  console.log("prakriti request send");
+  // console.log("prakriti request send");
   const input_data = req.query.msg;
   getPrakriti(input_data, res);
 });
@@ -110,8 +112,8 @@ app.post("/predict", (req, res) => {
     // getPrakriti({ prakriti: dataToSend });
 
     try {
-      console.log(dataToSend);
-      res.redirect(`/chatbot?msg=${encodeURIComponent(dataToSend)}`);
+      // console.log(dataToSend);
+      res.redirect(`/chatbot?msg=${dataToSend}`);
     } catch (error) {
       console.error("Error:", error.msg);
       res.status(500).send("Internal Server Error");
