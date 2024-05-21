@@ -1,5 +1,5 @@
 // child.js
-import terminate from "terminate";
+// import terminate from "terminate";
 import { exec } from "child_process";
 import path from "path";
 import fs from "fs";
@@ -40,7 +40,7 @@ process.on("message", (msg) => {
   fs.writeFileSync(envPath, envContent);
 
   const appPath = path.resolve(__dirname, "..", "rag-chatbot", "app.py");
-  const command = `chainlit run -c ${appPath}`;
+  const command = `chainlit run -h ${appPath}`;
   // if (chainlitProcess) {
   //   exec("exit");
   // }

@@ -1,38 +1,17 @@
-import { useState } from "react";
-import logo from "../images/chatbot_8943377.svg";
-const ChatBot = () => {
-  const [toggle, setToggle] = useState(false);
-  const handleClick = () => {
-    setToggle((prev) => !prev);
-  };
+import React from 'react';
 
+const ChatBot = () => {
   return (
-    <div>
-      <div>
-        {toggle && (
-          <iframe
-            src="http://localhost:8000"
-            width="400"
-            height="500"
-            title="chat box"
-          ></iframe>
-        )}
-      </div>
-      <div>
-        {" "}
-        <button
-          onClick={handleClick}
-          style={{ border: "none", background: "transparent" }}
-        >
-          {" "}
-          <img
-            src={logo}
-            alt="Chatbot Toggle Button"
-            style={{ width: "50px", height: "50px" }}
-          />{" "}
-        </button>{" "}
-      </div>
+    <div style={{ width: '100vw', height: '100vh', margin: 0 }}>
+      <iframe
+        src="http://localhost:8000"
+        width="100%"
+        height="94%"
+        style={{ border: 'none' }}
+        title="chat box"
+      ></iframe>
     </div>
   );
 };
+
 export default ChatBot;
