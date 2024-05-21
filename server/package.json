@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
+    "escape-path-with-spaces": "^1.0.2",
     "express": "^4.19.2",
     "http-proxy-middleware": "^3.0.0",
     "terminate": "^2.6.1"

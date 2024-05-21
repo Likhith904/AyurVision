@@ -3,6 +3,8 @@ import terminate from "terminate";
 import { exec } from "child_process";
 import path from "path";
 import fs from "fs";
+// import { escape} from "querystring";
+import escape from "escape-path-with-spaces";
 const __dirname = path.resolve();
 // Run the pip show chainlit command
 let chainlitProcess = null;

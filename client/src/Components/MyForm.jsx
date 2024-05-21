@@ -6,24 +6,12 @@ const MyForm = () => {
   const [questions, setQuestions] = useState([]);
 
   useEffect(() => {
-    // Mock dataset (replace with your actual data)
     const data = {
       Gender: ["Female", "Male"],
       bodyFrame_Breadth: ["Broad", "Medium", "Thin/Narrow"],
       skin_Nature: ["Dry", "Normal", "Oily", "Seasonal/Variable"],
-      skin_Color: [
-        "Dark",
-        "FairPaleYellow",
-        "FairPink",
-        "FairReddish",
-        "Whitish",
-      ],
-      weight_Changes: [
-        "Difficultyingaining",
-        "Gainandloseeasily",
-        "Gaineasilyandlosewithdifficulty",
-        "Stable",
-      ],
+      skin_Color: ["Dark", "FairPaleYellow", "FairPink", "FairReddish", "Whitish"],
+      weight_Changes: ["Difficultyingaining", "Gainandloseeasily", "Gaineasilyandlosewithdifficulty", "Stable"],
       nails_color: ["PaleYellow", "Pink", "Reddish"],
       teeth_Color: ["Dull/Blackish", "MilkyWhite", "Yellowish"],
       teeth_Shape: ["Irregular", "Regular"],
@@ -39,7 +27,7 @@ const MyForm = () => {
       dreams_Amount: ["High", "Low", "Medium", "Variable"],
       voice_clear: ["Clear", "Non_Clear"],
       eye_Color: ["Black", "DarkBrown", "Grayish", "LightBrown"],
-      healthproblem_in_temp: ["Both", "Cold", "Warm", null], // assuming nan should be converted to null
+      healthproblem_in_temp: ["Both", "Cold", "Warm", null],
       hair_Growth: ["Dense", "Moderate", "Scanty"],
       hair_Type: ["Thick", "Thin"],
       hair_Nature2: ["Falling", "Non_Falling"],
@@ -55,14 +43,12 @@ const MyForm = () => {
       speech_Argumentative: ["Argumentative", "Non_Argumentative"],
     };
 
-    // Convert dataset into array of objects for easier mapping
     const questionsArray = Object.entries(data).map(([key, options]) => ({
       key,
       label: key.replace(/_/g, " "),
       options,
     }));
 
-    // Set questions and initialize form data
     setQuestions(questionsArray);
     const initialFormData = {};
     questionsArray.forEach((question) => {
@@ -86,49 +72,60 @@ const MyForm = () => {
     const dataArray = [];
     for (const key in formData) {
       dataArray.push(parseInt(formData[key], 10));
-      // console.log(`${key}: ${formData[key]}`;;
-      //
     }
     console.log(dataArray);
-    // Send the form data to the server
     axios
-      .post("http://localhost:3000/predict", {
-        data: dataArray,
-      })
+      .post("http://localhost:3000/predict", { data: dataArray })
       .then((response) => {
-        // Handle response from server if needed
         console.log(response.data);
       })
       .catch((error) => {
-        // Handle error if request fails
         console.error("Error:", error);
       });
   };
 
   return (
-    <div>
-      <h1>Prakriti</h1>
-      <form onSubmit={handleSubmit}>
-        {/* Display questions and options */}
-        {questions.map((question, index) => (
-          <div key={index}>
-            <h3>{question.label}</h3>
-            {question.options.map((option, optionIndex) => (
-              <label key={optionIndex}>
-                <input
-                  type="radio"
-                  name={question.key}
-                  value={optionIndex}
-                  checked={formData[question.key] === optionIndex.toString()}
-                  onChange={handleChange}
-                />
-                {option}
-              </label>
-            ))}
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <h1 className="text-3xl font-bold mb-8">Prakriti Identification</h1>
+      <div className="flex w-full max-w-6xl bg-white p-8 rounded shadow-md">
+        <form onSubmit={handleSubmit} className="w-1/2 pr-4">
+          {questions.map((question, index) => (
+            <div key={index} className="mb-6">
+              <h3 className="text-lg font-semibold mb-2">{question.label}</h3>
+              <div className="flex flex-col">
+                {question.options.map((option, optionIndex) => (
+                  <label key={optionIndex} className="flex items-center mb-2">
+                    <input
+                      type="radio"
+                      name={question.key}
+                      value={optionIndex}
+                      checked={formData[question.key] === optionIndex.toString()}
+                      onChange={handleChange}
+                      className="form-radio text-indigo-600"
+                    />
+                    <span className="ml-2">{option}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          ))}
+          <button
+            type="submit"
+            className="w-full bg-indigo-600 text-white py-2 px-4 rounded hover:bg-green-500 transition duration-200"
+          >
+            Submit
+          </button>
+        </form>
+        <div className="w-1/2 pl-4 border-l border-gray-300">
+          <h2 className="text-2xl font-bold mb-4">Chatbot</h2>
+          <div className="flex flex-col items-center justify-center h-full">
+            <div className="w-full h-full bg-gray-100 flex items-center justify-center rounded">
+              {/* Placeholder for chatbot */}
+              <p className="text-gray-600">Chatbot interface coming soon...</p>
+            </div>
           </div>
-        ))}
-        <button type="submit">Submit</button>
-      </form>
+        </div>
+      </div>
     </div>
   );
 };
