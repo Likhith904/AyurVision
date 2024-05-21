@@ -5,12 +5,18 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node ./index.js"
+    "start": "nodemon ./index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.19.2"
+    "escape-path-with-spaces": "^1.0.2",
+    "express": "^4.19.2",
+    "http-proxy-middleware": "^3.0.0",
+    "terminate": "^2.6.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
   }
 }

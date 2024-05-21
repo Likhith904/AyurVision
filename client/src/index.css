@@ -54,3 +54,7 @@ nav ul li a{
     font-weight: 700;
     color:rgb(46, 88, 45);
 }
+
+.bg-custom-color {
+    background-color: rgb(95, 177, 93);
+  }
