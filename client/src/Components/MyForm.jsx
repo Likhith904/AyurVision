@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import MoonLoader from "react-spinners/MoonLoader";
 import axios from "axios";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
@@ -7,8 +8,7 @@ const MyForm = () => {
   const [formData, setFormData] = useState({});
   const [questions, setQuestions] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submissionMessage, setSubmissionMessage] = useState("");
-  const [apiResponse, setApiResponse] = useState(null); // Add this line
+  const [apiResponse, setApiResponse] = useState(null);
 
   useEffect(() => {
     const data = {
@@ -89,13 +89,11 @@ const MyForm = () => {
     for (const key in formData) {
       dataArray.push(parseInt(formData[key], 10));
     }
-
+    let res="";
     axios
       .post("http://localhost:3000/predict", { data: dataArray })
       .then(async (response) => {
-        console.log(response.data);
-        setApiResponse(response.data);
-        setSubmissionMessage(`Successfully submitted.`);
+        res=response.data.data;
         await axios.get(`http://localhost:3000/chatbot/?msg=${response.data}`);
       })
       .catch((error) => {
@@ -103,9 +101,9 @@ const MyForm = () => {
       })
       .finally(() => {
         setIsSubmitting(false);
+        setApiResponse(res);
       });
 
-    setIsSubmitting(false);
     setFormData({});
   };
 
@@ -151,22 +149,20 @@ const MyForm = () => {
                 type="submit"
                 className={`w-full py-2 px-4 rounded ${
                   isSubmitting
-                    ? "bg-gray-400 cursor-not-allowed"
+                    ? "bg-gray-400"
                     : "bg-indigo-600 text-white hover:bg-green-500 transition duration-200"
                 }`}
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Submitting..." : "Submit"}
+                Submit
               </button>
-              {submissionMessage && (
-                <p className="text-center mt-4">{submissionMessage}</p>
-              )}
-              {apiResponse && (
-                <div className="text-center mt-4">
-                  <p>Your Prakriti:</p>
-                  <pre>{JSON.stringify(apiResponse, null, 2)}</pre>
-                </div>
-              )}
+              <div className='flex justify-center items-center my-10 h-6'>
+              {isSubmitting&&<>
+                <p className='text-xl inline px-5'>Identifying your prakriti...</p>
+                <MoonLoader loading={isSubmitting} size={24} color={'green'}/>
+              </>}
+              {apiResponse &&<p className='text-xl '>Your Prakriti is: <b>{apiResponse}</b></p>}
+              </div>
             </form>
           </div>
         </div>

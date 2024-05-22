@@ -81,7 +81,6 @@ app.get("/chatbot", (req, res) => {
 });
 
 app.post("/predict", (req, res) => {
-  console.log("Request received");
   // Receive input data from client
   const inputData = req.body;
 
@@ -96,7 +95,8 @@ app.post("/predict", (req, res) => {
 
   // Listen for output from child process
   pythonProcess.stdout.on("data", (data) => {
-    dataToSend = data.toString();
+    let trimmedData = data.toString().trim();
+    dataToSend = trimmedData;
   });
   pythonProcess.stdout.on("error", (err) => {
     console.error("Error in stdout:", err);
@@ -109,12 +109,13 @@ app.post("/predict", (req, res) => {
 
   pythonProcess.on("close", (code) => {
     console.log(`child process close all stdio with code ${code}`);
-    console.log(dataToSend);
-    // getPrakriti({ prakriti: dataToSend });
 
     try {
-      // console.log(dataToSend);
-      res.status(200).json(dataToSend);
+      if (dataToSend.startsWith('"') && dataToSend.endsWith('"')) {
+        dataToSend = dataToSend.slice(1, -1); // Remove surrounding quotes if present
+    }
+    console.log(`Processed data to send: "${dataToSend}"`);
+      res.status(200).json({data: dataToSend});
     } catch (error) {
       console.error("Error:", error.msg);
       res.status(500).send("Internal Server Error");
