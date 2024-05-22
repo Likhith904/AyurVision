@@ -158,6 +158,8 @@ async def main(message):
     print(message.content)
     # prak = "the user is {prakriti} type".format(prakriti=prakriti)
     res = await chain.ainvoke(message.content, callbacks=[cb])
+    # prak = "the user is {prakriti} type".format(prakriti=prakriti)
+    res = await chain.ainvoke(message.content, callbacks=[cb])
     # print(f"response: {res}")
     answer = res["result"]
     # answer = answer.replace(".", ".\n")

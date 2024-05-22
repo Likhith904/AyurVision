@@ -24,6 +24,7 @@ const __dirname = path.resolve();
 const getPrakriti = (dataToSend, res) => {
   const virtualEnvPath = path.resolve(__dirname, "..", ".venv");
   const activateScript = path.join(virtualEnvPath, "Scripts", "activate");
+  // const activateScript = escape(activateScript1);
   console.log(activateScript);
   const activateProcess = spawn(activateScript, [], { shell: true });
   activateProcess.stdout.on("data", (data) => {

@@ -1,12 +1,12 @@
 // child.js
-import terminate from "terminate";
+import fkill from "fkill";
 import { exec } from "child_process";
 import path from "path";
 import fs from "fs";
 const __dirname = path.resolve();
 // Run the pip show chainlit command
 let chainlitProcess = null;
-process.on("message", (msg) => {
+process.on("message", async (msg) => {
   // const appPath = path.resolve(__dirname, "..", "rag-chatbot", "app.py");
   const envPath = path.resolve(__dirname, "..", "rag-chatbot", ".env");
   const filesPath = path.resolve(__dirname, ".", ".files");
@@ -37,8 +37,12 @@ process.on("message", (msg) => {
   // Write the modified content back to the .env file
   fs.writeFileSync(envPath, envContent);
 
+  if (chainlitProcess != null) {
+    chainlitProcess.kill();
+  }
+
   const appPath = path.resolve(__dirname, "..", "rag-chatbot", "app.py");
-  const command = `chainlit run -c ${appPath}`;
+  const command = `chainlit run -h ${appPath}`;
   // if (chainlitProcess) {
   //   exec("exit");
   // }
