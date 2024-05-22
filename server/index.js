@@ -111,11 +111,11 @@ app.post("/predict", (req, res) => {
     console.log(`child process close all stdio with code ${code}`);
 
     try {
-      if (dataToSend.startsWith('"') && dataToSend.endsWith('"')) {
-        dataToSend = dataToSend.slice(1, -1); // Remove surrounding quotes if present
-    }
-    console.log(`Processed data to send: "${dataToSend}"`);
-      res.status(200).json({data: dataToSend});
+      // if (dataToSend.startsWith('"') && dataToSend.endsWith('"')) {
+      //   dataToSend = dataToSend.slice(1, -1); // Remove surrounding quotes if present
+      // }
+      console.log(`Processed data to send: "${dataToSend}"`);
+      res.status(200).json({ data: dataToSend });
     } catch (error) {
       console.error("Error:", error.msg);
       res.status(500).send("Internal Server Error");

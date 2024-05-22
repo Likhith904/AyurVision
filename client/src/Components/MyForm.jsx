@@ -89,19 +89,21 @@ const MyForm = () => {
     for (const key in formData) {
       dataArray.push(parseInt(formData[key], 10));
     }
-    let res="";
+    let res = "";
     axios
       .post("http://localhost:3000/predict", { data: dataArray })
       .then(async (response) => {
-        res=response.data.data;
-        await axios.get(`http://localhost:3000/chatbot/?msg=${response.data}`);
+        res = response.data.data;
+        console.log(res);
+        axios.get(`http://localhost:3000/chatbot/?msg=${res}`);
+
+        setApiResponse(res);
       })
       .catch((error) => {
         console.error("Error:", error);
       })
       .finally(() => {
         setIsSubmitting(false);
-        setApiResponse(res);
       });
 
     setFormData({});
@@ -156,12 +158,24 @@ const MyForm = () => {
               >
                 Submit
               </button>
-              <div className='flex justify-center items-center my-10 h-6'>
-              {isSubmitting&&<>
-                <p className='text-xl inline px-5'>Identifying your prakriti...</p>
-                <MoonLoader loading={isSubmitting} size={24} color={'green'}/>
-              </>}
-              {apiResponse &&<p className='text-xl '>Your Prakriti is: <b>{apiResponse}</b></p>}
+              <div className="flex justify-center items-center my-10 h-6">
+                {isSubmitting && (
+                  <>
+                    <p className="text-xl inline px-5">
+                      Identifying your prakriti...
+                    </p>
+                    <MoonLoader
+                      loading={isSubmitting}
+                      size={24}
+                      color={"green"}
+                    />
+                  </>
+                )}
+                {apiResponse && (
+                  <p className="text-xl ">
+                    Your Prakriti is: <b>{apiResponse}</b>
+                  </p>
+                )}
               </div>
             </form>
           </div>
