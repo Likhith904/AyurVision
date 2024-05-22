@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
 import path from "path";
-// import escape from "escape-path-with-spaces";
 // import { createProxyMiddleware } from "http-proxy-middleware";
 import { fork, spawn } from "child_process";
 const app = express();
@@ -41,7 +40,7 @@ const getPrakriti = (dataToSend, res) => {
     const pythonProcess = fork("./child.js");
 
     console.log("running inside getPrakriti");
-    const data = dataToSend;
+    const data = dataToSend.data;
     console.log(dataToSend);
     pythonProcess.send({ data: dataToSend });
 
@@ -77,7 +76,7 @@ app.post("/chatbot", (req, res) => {
 
 app.get("/chatbot", (req, res) => {
   // console.log("prakriti request send");
-  const input_data = req.query.msg;
+  const input_data = req.query.msg || "";
   getPrakriti(input_data, res);
 });
 
@@ -115,7 +114,7 @@ app.post("/predict", (req, res) => {
 
     try {
       // console.log(dataToSend);
-      res.redirect(`/chatbot?msg=${dataToSend}`);
+      res.status(200).json(dataToSend);
     } catch (error) {
       console.error("Error:", error.msg);
       res.status(500).send("Internal Server Error");

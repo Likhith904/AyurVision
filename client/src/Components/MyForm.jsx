@@ -92,10 +92,11 @@ const MyForm = () => {
 
     axios
       .post("http://localhost:3000/predict", { data: dataArray })
-      .then((response) => {
+      .then(async (response) => {
         console.log(response.data);
         setApiResponse(response.data);
         setSubmissionMessage(`Successfully submitted.`);
+        await axios.get(`http://localhost:3000/chatbot/?msg=${response.data}`);
       })
       .catch((error) => {
         console.error("Error:", error);
