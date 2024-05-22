@@ -3,6 +3,8 @@ import fkill from "fkill";
 import { exec } from "child_process";
 import path from "path";
 import fs from "fs";
+// import { escape} from "querystring";
+import escape from "escape-path-with-spaces";
 const __dirname = path.resolve();
 // Run the pip show chainlit command
 let chainlitProcess = null;
@@ -42,6 +44,7 @@ process.on("message", async (msg) => {
   }
 
   const appPath = path.resolve(__dirname, "..", "rag-chatbot", "app.py");
+  const command = `chainlit run -h ${appPath}`;
   const command = `chainlit run -h ${appPath}`;
   // if (chainlitProcess) {
   //   exec("exit");

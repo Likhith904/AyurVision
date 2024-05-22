@@ -1,9 +1,14 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
 
 const MyForm = () => {
   const [formData, setFormData] = useState({});
   const [questions, setQuestions] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submissionMessage, setSubmissionMessage] = useState("");
+  const [apiResponse, setApiResponse] = useState(null); // Add this line
 
   useEffect(() => {
     const data = {
@@ -74,72 +79,101 @@ const MyForm = () => {
       ...formData,
       [name]: value,
     });
-    console.log(formData);
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    setIsSubmitting(true);
 
     const dataArray = [];
     for (const key in formData) {
       dataArray.push(parseInt(formData[key], 10));
     }
-    console.log(dataArray);
+
     axios
       .post("http://localhost:3000/predict", { data: dataArray })
       .then((response) => {
         console.log(response.data);
+        setApiResponse(response.data);
+        setSubmissionMessage(`Successfully submitted.`);
       })
       .catch((error) => {
         console.error("Error:", error);
+      })
+      .finally(() => {
+        setIsSubmitting(false);
       });
+
+    setIsSubmitting(false);
+    setFormData({});
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <h1 className="text-3xl font-bold mb-8">Prakriti Identification</h1>
-      <div className="flex w-full max-w-6xl bg-white p-8 rounded shadow-md">
-        <form onSubmit={handleSubmit} className="w-1/2 pr-4">
-          {questions.map((question, index) => (
-            <div key={index} className="mb-6">
-              <h3 className="text-lg font-semibold mb-2">{question.label}</h3>
-              <div className="flex flex-col">
-                {question.options.map((option, optionIndex) => (
-                  <label key={optionIndex} className="flex items-center mb-2">
-                    <input
-                      type="radio"
-                      name={question.key}
-                      value={optionIndex}
-                      checked={
-                        formData[question.key] === optionIndex.toString()
-                      }
-                      onChange={handleChange}
-                      className="form-radio text-indigo-600"
-                    />
-                    <span className="ml-2">{option}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-          ))}
-          <button
-            type="submit"
-            className="w-full bg-indigo-600 text-white py-2 px-4 rounded hover:bg-green-500 transition duration-200"
-          >
-            Submit
-          </button>
-        </form>
-        <div className="w-1/2 pl-4 border-l border-gray-300">
-          <h2 className="text-2xl font-bold mb-4">Chatbot</h2>
-          <div className="flex flex-col items-center justify-center h-full">
-            <div className="w-full h-full bg-gray-100 flex items-center justify-center rounded">
-              {/* Placeholder for chatbot */}
-              <p className="text-gray-600">Chatbot interface coming soon...</p>
-            </div>
+    <>
+      <div style={{ marginTop: "70px" }}>
+        <Navbar />
+      </div>
+
+      <div className="min-h-screen bg-green-100">
+        <div className="flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+          <h1 className="text-3xl font-bold mb-8">Prakriti Identification</h1>
+          <div className="w-full max-w-3xl bg-white p-8 rounded shadow-md">
+            <form onSubmit={handleSubmit} className="w-full">
+              {questions.map((question, index) => (
+                <div key={index} className="mb-6">
+                  <h3 className="text-lg font-semibold mb-2">
+                    {question.label}
+                  </h3>
+                  <div className="flex flex-col">
+                    {question.options.map((option, optionIndex) => (
+                      <label
+                        key={optionIndex}
+                        className="flex items-center mb-2"
+                      >
+                        <input
+                          type="radio"
+                          name={question.key}
+                          value={optionIndex}
+                          checked={
+                            formData[question.key] === optionIndex.toString()
+                          }
+                          onChange={handleChange}
+                          className="form-radio text-indigo-600"
+                        />
+                        <span className="ml-2">{option}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              ))}
+              <button
+                type="submit"
+                className={`w-full py-2 px-4 rounded ${
+                  isSubmitting
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-indigo-600 text-white hover:bg-green-500 transition duration-200"
+                }`}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Submitting..." : "Submit"}
+              </button>
+              {submissionMessage && (
+                <p className="text-center mt-4">{submissionMessage}</p>
+              )}
+              {apiResponse && (
+                <div className="text-center mt-4">
+                  <p>Your Prakriti:</p>
+                  <pre>{JSON.stringify(apiResponse, null, 2)}</pre>
+                </div>
+              )}
+            </form>
           </div>
         </div>
       </div>
-    </div>
+      <div>
+        <Footer />
+      </div>
+    </>
   );
 };
 
