@@ -1,0 +1,25 @@
+{
+  "name": "ayurvision-server",
+  "version": "1.0.0",
+  "description": "Server for AyurVision Mini Project",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon ./index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "escape-path-with-spaces": "^1.0.2",
+    "express": "^4.19.2",
+    "fkill": "^9.0.0",
+    "http-proxy-middleware": "^3.0.0",
+    "is-port-reachable": "^4.0.0",
+    "kill-port": "^2.0.1",
+    "terminate": "^2.6.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
