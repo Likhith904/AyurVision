@@ -21,6 +21,7 @@ load_dotenv()
 groq_api_key = os.getenv("GROQ_API_KEY")
 qdrant_url = os.getenv("QDRANT_URL")
 qdrant_api_key = os.getenv("QDRANT_API_KEY")
+langchain_api_key = os.getenv("LANGCHAIN_API_KEY")
 prakriti = os.getenv('PRAKRITI').lower()
 
 # kapha
@@ -130,9 +131,10 @@ def set_custom_prompt():
     return prompt
 
 
-chat_model = ChatGroq(temperature=0, model_name="mixtral-8x7b-32768")
+# chat_model = ChatGroq(temperature=0, model_name="mixtral-8x7b-32768")
+# chat_model = ChatGroq(temperature=0, model_name="whisper-large-v3")
 # chat_model = ChatGroq(temperature=0, model_name="Llama2-70b-4096")
-# chat_model = ChatGroq(temperature=0, model_name="Llama3-70b-8192")
+chat_model = ChatGroq(temperature=0.3, model_name="Llama3-70b-8192")
 # chat_model = ChatGroq(temperature=0, model_name="Llama3-8b-8192")
 # chat_model = ChatOllama(model="llama2", request_timeout=30.0)
 
