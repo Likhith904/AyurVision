@@ -24,8 +24,7 @@ qdrant_api_key = os.getenv("QDRANT_API_KEY")
 prakriti = os.getenv('PRAKRITI').lower()
 
 custom_prompt_template_kapha = """Use the following pieces of information to answer the user's question.
-If you don't know the answer, just say that you don't know, don't try to make up an answer.Be friendly to the user
-and respond appropriately.
+If you don't know the answer, just say that you don't know, don't try to make up an answer.Be friendly to the user and respond appropriately to what user has asked only.
 this user has kapha prakriti and this is taken from the test the user gave on our website.
 Context: {context}
 Question: {question}
@@ -35,19 +34,17 @@ Answer general questions normally.
 Helpful answer:
 """
 custom_prompt_template_vata = """Use the following pieces of information to answer the user's question.
-If you don't know the answer, just say that you don't know, don't try to make up an answer.Be friendly to the user
-and respond appropriately.
+If you don't know the answer, just say that you don't know, don't try to make up an answer.Be friendly to the user and respond appropriately to what user has asked only.
 this user has vata prakriti and this is taken from the test the user gave on our webiste.
 Context: {context}
 Question: {question}
 
 Only return the helpful answer below and nothing else.
-Answer general questions normally.
+# Answer general questions normally.
 Helpful answer:
 """
 custom_prompt_template_pitta = """Use the following pieces of information to answer the user's question.
-If you don't know the answer, just say that you don't know, don't try to make up an answer.Be friendly to the user
-and respond appropriately.
+If you don't know the answer, just say that you don't know, don't try to make up an answer.Be friendly to the user and respond appropriately to what user has asked only.
 this user has pitta prakriti and this is taken from the test the user gave on our website.
 Context: {context}
 Question: {question}
@@ -57,14 +54,13 @@ Answer general questions normally.
 Helpful answer:
 """
 custom_prompt_template = """Use the following pieces of information to answer the user's question.
-If you don't know the answer, just say that you don't know, don't try to make up an answer.Be friendly to the user
-and respond appropriately.
+If you don't know the answer, just say that you don't know, don't try to make up an answer.Be friendly to the user and respond appropriately to what user has asked only.
 the user has not taken any prakriti test from our website and consider him as neutral prakriti.
 Context: {context}
 Question: {question}
 
 Only return the helpful answer below and nothing else.
-Answer general questions normally.
+# Answer general questions normally.
 Helpful answer:
 """
 
@@ -94,8 +90,10 @@ def set_custom_prompt():
 
 
 chat_model = ChatGroq(temperature=0, model_name="mixtral-8x7b-32768")
+# chat_model = ChatGroq(temperature=0, model_name="gemma-7b-it")
 # chat_model = ChatGroq(temperature=0, model_name="Llama2-70b-4096")
 # chat_model = ChatGroq(temperature=0, model_name="Llama3-70b-8192")
+# chat_model = ChatGroq(temperature=0, model_name="llama-3.1-8b-instant")
 # chat_model = ChatGroq(temperature=0, model_name="Llama3-8b-8192")
 # chat_model = ChatOllama(model="llama2", request_timeout=30.0)
 

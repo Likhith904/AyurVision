@@ -21,12 +21,44 @@ const __dirname = path.resolve();
 //   createProxyMiddleware({ target: "http://localhost:8000", changeOrigin: true })
 // );
 
+// const getPrakriti = (dataToSend, res) => {
+//   const virtualEnvPath = path.resolve(__dirname, "..", ".venv");
+//   const pythonExecutable = path.join(virtualEnvPath, "Scripts", "python");
+
+//   // console.log(`Using Python executable: ${pythonExecutable}`);
+
+//   // const args = ["./child.py", JSON.stringify(dataToSend.data)];
+
+//   const pythonProcess = spawn(pythonExecutable, args);
+
+//   pythonProcess.stdout.on("data", (data) => {
+//     console.log(`stdout from Python script: ${data}`);
+//     // You might want to send this data as a response
+//     res.status(200).json({ output: data.toString() });
+//   });
+
+//   pythonProcess.stderr.on("data", (data) => {
+//     console.error(`stderr from Python script: ${data}`);
+//     res.status(500).send("Error occurred in Python script.");
+//   });
+
+//   pythonProcess.on("close", (code) => {
+//     console.log(`Python process exited with code ${code}`);
+//     if (code !== 0) {
+//       res.status(500).send("Error occurred during Python execution.");
+//     }
+//   });
+// };
+
 const getPrakriti = (dataToSend, res) => {
   const virtualEnvPath = path.resolve(__dirname, "..", ".venv");
-  const activateScript = path.join(virtualEnvPath, "Scripts", "activate");
+  const activateScript =
+    process.platform == "win32"
+      ? path.join(virtualEnvPath, "Scripts", "activate")
+      : path.join("source", virtualEnvPath, "bin", "activate");
   // const activateScript = escape(activateScript1);
   console.log(activateScript);
-  const activateProcess = spawn(activateScript, [], { shell: true });
+  const activateProcess = exec(activateScript, [], { shell: true });
   activateProcess.stdout.on("data", (data) => {
     console.log(`stdout (activate): ${data}`);
   });
@@ -37,7 +69,7 @@ const getPrakriti = (dataToSend, res) => {
 
   activateProcess.on("close", (code) => {
     console.log(`child process (activate) exited with code ${code}`);
-    const pythonProcess = fork("./child.js");
+    const pythonProcess = spawn("./child.js", []);
 
     console.log("running inside getPrakriti");
     const data = dataToSend.data;
@@ -60,7 +92,7 @@ const getPrakriti = (dataToSend, res) => {
       console.log(`child process exited with code ${code}`);
       try {
         // Handle received data as needed
-        res.status(200).json(dataToSend);
+        res.status(200).json({ success: true, data: dataToSend });
       } catch (error) {
         console.error("Error:", error.message);
         res.status(500).send("Internal Server Error");
@@ -68,25 +100,33 @@ const getPrakriti = (dataToSend, res) => {
     });
   });
 };
+
 app.post("/chatbot", (req, res) => {
   console.log("prakriti request send");
   let input_data = req.query.msg || "";
   getPrakriti(input_data, res);
 });
 
-app.get("/chatbot", (req, res) => {
-  // console.log("prakriti request send");
-  const input_data = req.query.msg || "";
-  getPrakriti(input_data, res);
-});
+// app.get("/chatbot", (req, res) => {
+//   // console.log("prakriti request send");
+//   const input_data = req.query.msg || "";
+//   getPrakriti(input_data, res);
+// });
 
 app.post("/predict", (req, res) => {
   console.log("Request received");
   // Receive input data from client
   const inputData = req.body;
-
+  const pythonExecutable = path.resolve(
+    __dirname,
+    "..",
+    ".venv",
+    "Scripts",
+    "python.exe"
+  );
   // Spawn child process
-  const pythonProcess = spawn("python", ["model.py"]);
+  // const pythonProcess = spawn("python", ["model.py"]);
+  const pythonProcess = spawn(pythonExecutable, ["./model.py"]);
 
   // Send input data to child process
   pythonProcess.stdin.write(JSON.stringify(inputData));

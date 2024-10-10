@@ -40,9 +40,10 @@ def process_input(input_data):
 
 
 if __name__ == "__main__":
+    # input_data = json.loads(sys.stdin.readline())
     input_data = json.loads(sys.stdin.readline())
-
+    print(input_data)
     output = process_input(input_data)
-
+    output = output.strip().replace("\\", "")
     print(json.dumps(output))
     sys.stdout.flush()

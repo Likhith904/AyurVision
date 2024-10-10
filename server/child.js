@@ -5,7 +5,6 @@ import path from "path";
 import fs from "fs";
 import isPortReachable from "is-port-reachable";
 const __dirname = path.resolve();
-// Run the pip show chainlit command
 let chainlitProcess = null;
 const port = 8000;
 const host = "127.0.0.1";
